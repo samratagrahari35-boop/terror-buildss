@@ -3,197 +3,350 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terror Finance // Terminal 01</title>
-    <!-- Tailwind CSS for sleek layout -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Chart.js for real financial charts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Happy Birthday!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        body {
-            background-color: #030712;
-            font-family: 'Courier New', Courier, monospace;
-            overflow-x: hidden;
+        :root {
+            --bg-dark: #1a0510;
+            --bg-light: #4a1528;
+            --sakura-pink: #ffb7c5;
+            --sakura-glow: #ff758c;
+            --text-light: #ffe6eb;
         }
-        .glow-green { text-shadow: 0 0 10px #10b981; }
-        .glow-border { border-color: #1f2937; }
-        .glow-border:hover { border-color: #10b981; box-shadow: 0 0 15px rgba(16, 185, 129, 0.2); }
-        .animate-marquee { display: inline-block; white-space: nowrap; animation: marquee 30s linear infinite; }
-        @keyframes marquee { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
-        /* Live Log Animation */
-        #data-log::-webkit-scrollbar { width: 5px; }
-        #data-log::-webkit-scrollbar-track { background: #111827; }
-        #data-log::-webkit-scrollbar-thumb { background: #1f2937; }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: radial-gradient(circle at center, var(--bg-light), var(--bg-dark));
+            color: var(--text-light);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- SAKURA 3D PARTICLE SYSTEM --- */
+        #sakura-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            perspective: 1000px;
+        }
+
+        .petal {
+            position: absolute;
+            background: linear-gradient(45deg, var(--sakura-pink), #fff);
+            border-radius: 150px 0 150px 0;
+            box-shadow: 0 0 10px var(--sakura-glow);
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translate3d(0, -50px, 0) rotate(0deg) scale(1); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.6; }
+            100% { transform: translate3d(50px, 100vh, 100px) rotate(360deg) scale(0.5); opacity: 0; }
+        }
+
+        /* --- APP SCREENS --- */
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 90%;
+            max-width: 500px;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 183, 197, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 20px rgba(255, 183, 197, 0.1);
+            text-align: center;
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        .screen.active { display: flex; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        h1, h2 {
+            font-family: 'Dancing Script', cursive;
+            color: var(--sakura-pink);
+            text-shadow: 0 0 15px var(--sakura-glow);
+            margin-bottom: 20px;
+        }
+        h2 { font-size: 2.5rem; }
+
+        input {
+            width: 100%;
+            padding: 12px 20px;
+            margin-bottom: 15px;
+            border-radius: 30px;
+            border: 1px solid var(--sakura-glow);
+            background: rgba(0,0,0,0.3);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            text-align: center;
+        }
+        input::placeholder { color: rgba(255, 255, 255, 0.5); }
+
+        button {
+            background: linear-gradient(45deg, #ff4d6d, var(--sakura-glow));
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
+            transition: 0.3s;
+            margin: 10px;
+        }
+        button:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 8px 20px rgba(255, 77, 109, 0.6); }
+
+        #error-msg { color: #ff4d6d; margin-top: 10px; font-size: 0.9rem; font-weight: 600; min-height: 20px; }
+
+        /* --- QNA SECTION --- */
+        .btn-group { display: flex; gap: 20px; justify-content: center; position: relative; width: 100%; height: 60px; margin-top: 20px; }
+        #btn-yes { z-index: 2; }
+        #btn-no { position: relative; z-index: 5; background: linear-gradient(45deg, #6c757d, #495057); box-shadow: none; }
+
+        /* --- NOTES SECTION --- */
+        .notes-container {
+            display: flex; flex-direction: column; gap: 15px;
+            max-height: 60vh; overflow-y: auto; padding-right: 10px;
+            width: 100%;
+        }
+        .notes-container::-webkit-scrollbar { width: 5px; }
+        .notes-container::-webkit-scrollbar-thumb { background: var(--sakura-glow); border-radius: 10px; }
+
+        .note-card {
+            background: rgba(255, 183, 197, 0.1);
+            border-left: 4px solid var(--sakura-glow);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            text-align: left;
+            animation: slideIn 0.5s ease forwards;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        @keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
+
+        /* --- FINAL POPUP MODAL --- */
+        #final-modal {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+            display: none; justify-content: center; align-items: center; z-index: 100;
+        }
+        .modal-box {
+            background: linear-gradient(135deg, var(--bg-light), var(--bg-dark));
+            padding: 40px; border-radius: 20px; border: 2px solid var(--sakura-glow);
+            text-align: center; max-width: 400px; width: 90%;
+            box-shadow: 0 0 40px rgba(255, 117, 140, 0.4);
+        }
     </style>
 </head>
-<body class="text-gray-100 min-h-screen flex flex-col justify-between">
+<body>
 
-    <!-- FIXED TOP TICKER MARQUEE -->
-    <div class="fixed top-0 left-0 w-full bg-gray-950 border-b border-gray-800 text-xs py-2 px-4 z-50 overflow-hidden shadow-[0_1px_10px_rgba(0,0,0,0.5)]">
-        <div class="flex space-x-12 animate-marquee whitespace-nowrap">
-            <span class="text-emerald-400">● TOTAL CAPITAL LOCKED: $1.43B (USD)</span>
-            <span class="text-emerald-400">● BTC/USD (Spot): <span id="ticker-btc">$68,102.50</span> (+3.2%)</span>
-            <span class="text-emerald-400">● ETH/USD (Spot): <span id="ticker-eth">$3,510.15</span> (+1.8%)</span>
-            <span class="text-red-400">● SOL/USD (Spot): $148.20 (-0.5%)</span>
-            <span class="text-emerald-400">● TOTAL INFLOWS (24H): +$210M (High The Josh!)</span>
+    <!-- 3D Sakura Background -->
+    <div id="sakura-container"></div>
+
+    <!-- SCREEN 1: LOGIN -->
+    <div id="screen-login" class="screen active">
+        <h2>Birthday Gateway</h2>
+        <p style="margin-bottom: 20px; font-size: 0.9rem; opacity: 0.8;">Enter your Date of Birth to enter</p>
+        
+        <input type="text" id="dob-input" placeholder="e.g. 2067.03.31">
+        <button id="btn-check-dob" onclick="checkDOB()">Next</button>
+        
+        <div id="name-section" style="display: none; width: 100%; margin-top: 15px;">
+            <input type="text" id="name-input" placeholder="What is your Name?">
+            <button onclick="verifyLogin()">Let Me In</button>
+        </div>
+        
+        <p id="error-msg"></p>
+    </div>
+
+    <!-- SCREEN 2: QnA -->
+    <div id="screen-qna" class="screen">
+        <h2 id="question-text">Are u in?</h2>
+        <div class="btn-group">
+            <button id="btn-yes" onclick="nextQuestion()">Yes!</button>
+            <button id="btn-no" onmouseover="dodgeNo()" ontouchstart="dodgeNo()">No</button>
         </div>
     </div>
 
-    <!-- MAIN TERMINAL INTERFACE -->
-    <main class="max-w-7xl mx-auto w-full px-6 grid grid-cols-1 lg:grid-cols-3 gap-6 mt-16 pb-12">
-        
-        <!-- LEFT COLUMN: ALPHA LEAD CAPTURE & PREMIUM ENTRY -->
-        <div class="lg:col-span-1 space-y-6">
-            
-            <!-- SECTION 1: ALPHA HUB ACCESS -->
-            <div class="bg-gray-950/50 backdrop-blur-md p-6 rounded-xl border border-gray-900 glow-border">
-                <div class="flex items-center space-x-3 mb-4">
-                    <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
-                    <span class="text-xs font-mono text-gray-400 uppercase tracking-wider">Alpha Club // Deployment Port</span>
-                </div>
-                <h2 class="text-3xl font-extrabold tracking-tight text-white mb-2">ACCESS THE INNER CIRCLE</h2>
-                <p class="text-sm text-gray-400 leading-relaxed mb-6">Join a closed ecosystem receiving daily institutional technical analysis, algorithmic volatility triggers, and high-probability trade setups before the masses.</p>
-                
-                <!-- LEAD CAPTURE FORM -->
-                <form onsubmit="event.preventDefault(); alert('Access Credentials Dispatched.');" class="space-y-3">
-                    <div>
-                        <label class="block text-xs font-mono text-gray-500 uppercase mb-1">Trader Alias (Name)</label>
-                        <input type="text" placeholder="e.g. Purab" class="w-full bg-gray-900/80 border border-gray-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 transition-colors" required>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-mono text-gray-500 uppercase mb-1">Email Endpoint (Secure)</label>
-                        <input type="email" placeholder="alias@domain.com" class="w-full bg-gray-900/80 border border-gray-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 transition-colors" required>
-                    </div>
-                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-gray-950 font-bold py-2.5 rounded text-sm transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] cursor-pointer">INITIATE VIP DEPLOYMENT</button>
-                </form>
-            </div>
-
-            <!-- SECTION 2: THE "HIGH THE JOSH" PROJECT ENTRY -->
-            <div class="bg-gray-950/50 backdrop-blur-md p-6 rounded-xl border border-gray-900 glow-border bg-gradient-to-br from-gray-950 to-emerald-950/50">
-                <div class="text-xs font-mono text-emerald-400 uppercase tracking-wider mb-2">// SECURE GATEWAY OPEN</div>
-                <h3 class="text-xl font-bold text-white mb-3">MILLION DOLLAR TRADING ACADEMY</h3>
-                <p class="text-sm text-gray-400 mb-4">You got the energy? You ready to scale? Lock in your spot for the full Algorithmic Edge course. This is where we print.</p>
-                <a href="#" class="inline-block bg-transparent border-2 border-emerald-500 text-emerald-500 hover:bg-emerald-500 hover:text-gray-950 font-bold py-2 px-6 rounded text-sm transition-all shadow-[0_0_15px_rgba(16,185,129,0.2)]">ENTER ENROLLMENT PORT ➔</a>
-            </div>
-
-            <!-- TRUST MATRIX DATA GRID -->
-            <div class="bg-gray-950/50 backdrop-blur-md p-6 rounded-xl border border-gray-900 glow-border text-center">
-                <h4 class="text-xs text-gray-500 uppercase tracking-widest mb-4">Institutional Credibility Matrix</h4>
-                <div class="grid grid-cols-3 gap-3">
-                    <div>
-                        <div class="text-2xl font-bold text-white tracking-tight">91.4%</div>
-                        <div class="text-[10px] text-emerald-500 uppercase tracking-wider">Avg. Accuracy</div>
-                    </div>
-                    <div>
-                        <div class="text-2xl font-bold text-white tracking-tight">4.9/5</div>
-                        <div class="text-[10px] text-emerald-500 uppercase tracking-wider">Trust Score</div>
-                    </div>
-                    <div>
-                        <div class="text-2xl font-bold text-white tracking-tight">22K+</div>
-                        <div class="text-[10px] text-emerald-500 uppercase tracking-wider">Students</div>
-                    </div>
-                </div>
-            </div>
+    <!-- SCREEN 3: BIRTHDAY NOTES -->
+    <div id="screen-notes" class="screen">
+        <h2>Happy Birthday! 🎂</h2>
+        <div class="notes-container" id="notes-list">
+            <!-- Notes injected via JS -->
         </div>
+    </div>
 
-        <!-- MIDDLE/RIGHT COLUMN: LIVE CHART & LOGS -->
-        <div class="lg:col-span-2 space-y-6">
-            
-            <!-- THE LIVE CHART (MILLION DOLLAR ENGINE) -->
-            <div class="bg-gray-950/50 backdrop-blur-md p-6 rounded-xl border border-gray-900 glow-border flex flex-col justify-between transition-all duration-300">
-                <div>
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-xs font-mono text-gray-400 uppercase tracking-wider">Market Overview // Alpha Analytics</span>
-                        <span class="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded font-mono border border-emerald-800/50 animate-pulse">LIVE DATA FEEDS ACTIVE</span>
-                    </div>
-                    <!-- CHART CANVAS -->
-                    <div class="h-80 w-full bg-gray-900/30 rounded border border-gray-900 p-2">
-                        <canvas id="marketChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- EXPANDED: LIVE RECORD OF DOLLARS/BITCOINS -->
-            <div class="bg-gray-950/50 backdrop-blur-md p-6 rounded-xl border border-gray-900 glow-border">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xs font-mono text-gray-400 uppercase tracking-wider">Global Capital Flow Record (24H)</h3>
-                    <span class="text-[10px] text-emerald-600 font-mono">Simulated Institutional Feed</span>
-                </div>
-                <div id="data-log" class="h-64 font-mono text-[11px] text-emerald-400 space-y-1.5 overflow-y-auto pr-3">
-                    <p class="text-emerald-300">> System Boot: SECURE MATRIX DISPATCH ACTIVE.</p>
-                    <p>> [06:01:22] INFLOW: $14.5M (Institutional Buy SOL/USD) // Status: <span class="text-emerald-300">HIGH THE JOSH</span></p>
-                    <p class="text-red-400">> [06:01:50] OUTFLOW: $2.1M (Retail Sell BTC/USD)</p>
-                    <p>> [06:02:11] INFLOW: $32.8M (Quant Fund ETH/USD Spot)</p>
-                    <p>> [06:03:00] INFLOW: $4.2M (Airdrop Reward Distribution)</p>
-                    <p>> [06:03:45] INFLOW: $20.0M (Algorithmic Market Maker SOL/USD)</p>
-                    <p>> [06:04:12] INFLOW: $8.9M (Exchange Liquidity ETH/USD)</p>
-                    <p class="text-emerald-300">> [06:05:00] INFLOW: $55.1M (Hedge Fund BTC/USD LONG) // VIBE: <span class="text-emerald-300">MAX_JOSH</span></p>
-                </div>
-            </div>
-            
-            <!-- EXTRA LONG: REVENUE OUTCOME LINKS -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <a href="#" class="p-6 bg-gray-900/50 border border-gray-800 rounded-xl hover:border-emerald-500/50 transition-all group hover:-translate-y-1">
-                    <div class="text-xs font-mono text-emerald-400 uppercase tracking-wider mb-2">01 // PREMIUM SIGNALS TELEGRAM</div>
-                    <div class="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors">Daily Algorithmic Market Triggers & Setups ➔</div>
-                    <p class="text-xs text-gray-600 mt-2">Join 12k+ traders getting an institutional edge.</p>
-                </a>
-                <a href="#" class="p-6 bg-gray-900/50 border border-gray-800 rounded-xl hover:border-emerald-500/50 transition-all group hover:-translate-y-1 hover:bg-emerald-950/20">
-                    <div class="text-xs font-mono text-emerald-400 uppercase tracking-wider mb-2">02 // MASTERCLASS ACADEMY</div>
-                    <div class="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors">Complete Algorithmic Trading Blueprint ➔</div>
-                    <p class="text-xs text-gray-600 mt-2">Million dollar strategies to scale your portfolio.</p>
-                </a>
-            </div>
+    <!-- FINAL POPUP -->
+    <div id="final-modal">
+        <div class="modal-box">
+            <h2>Hey Beautiful! 🌸</h2>
+            <p style="margin-bottom: 25px;">Are u happy? Wanna say something? <br><br><b>Happy Birthday to you once more! 🎉💖</b></p>
+            <button onclick="closeModal()">Thank You!</button>
         </div>
+    </div>
 
-    </main>
-
-    <!-- TERMINAL FOOTER -->
-    <footer class="max-w-7xl mx-auto w-full px-6 py-6 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-600 border-t border-gray-900 mt-8">
-        <div>&copy; 2026 Terror Finance // Digital Portal. System Architecture by Principal Architect. All Data Streams presentation-based only. High The Josh.</div>
-        <div class="flex space-x-4 mt-2 sm:mt-0">
-            <span class="text-emerald-600 font-mono">MAINNET DISPATCH SECURED</span>
-        </div>
-    </footer>
-
-    <!-- CHART ARCHITECTURE SCRIPT -->
     <script>
-        const ctx = document.getElementById('marketChart').getContext('2d');
-        const chartData = [65200, 65900, 65400, 66800, 66100, 67420, 68102.50];
-        const chartLabels = ['06:00', '07:00', '08:00', '09:00', '10:00', '11:00', 'LIVE'];
-        
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: chartLabels,
-                datasets: [{
-                    label: 'BTC/USD Market Structure ($)',
-                    data: chartData,
-                    borderColor: '#10b981',
-                    borderWidth: 2.5,
-                    backgroundColor: 'rgba(16, 185, 129, 0.05)',
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#10b981',
-                    pointRadius: 4,
-                    pointHoverRadius: 7
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { grid: { color: '#111827' }, ticks: { color: '#6b7280', font: { family: 'Courier New' } } },
-                    y: { grid: { color: '#111827' }, ticks: { color: '#6b7280', font: { family: 'Courier New' } } }
-                }
-            }
-        });
+        // --- 1. SAKURA GENERATION ---
+        const sakuraContainer = document.getElementById('sakura-container');
+        for (let i = 0; i < 40; i++) {
+            let petal = document.createElement('div');
+            petal.className = 'petal';
+            let size = Math.random() * 15 + 10; // 10px to 25px
+            petal.style.width = `${size}px`;
+            petal.style.height = `${size}px`;
+            petal.style.left = `${Math.random() * 100}vw`;
+            petal.style.animationDuration = `${Math.random() * 5 + 4}s`;
+            petal.style.animationDelay = `${Math.random() * 5}s`;
+            // Fake 3D depth by varying blur and scale
+            if (size < 15) { petal.style.filter = "blur(2px)"; petal.style.zIndex = "-1"; }
+            sakuraContainer.appendChild(petal);
+        }
 
-        // Autoscroll the Data Log
-        const logDiv = document.getElementById('data-log');
-        setInterval(() => {
-            logDiv.scrollTop = logDiv.scrollHeight;
-        }, 1000);
+        // --- 2. DATA & LOGIN LOGIC ---
+        const friendsData = {
+            "2067.03.31": "mahima",
+            "2067.03.20": "anisha",
+            "2067.10.27": "bigyan",
+            "2068.02.27": "sayan",
+            "2068.02.16": "chetan"
+        };
+
+        let currentValidName = "";
+        let verifiedFriendName = "";
+
+        function checkDOB() {
+            // Normalize input replacing dashes with dots just in case
+            let dobRaw = document.getElementById('dob-input').value.trim().replace(/-/g, '.');
+            const errorMsg = document.getElementById('error-msg');
+            
+            if (friendsData[dobRaw]) {
+                currentValidName = friendsData[dobRaw];
+                errorMsg.innerText = "";
+                document.getElementById('dob-input').style.display = "none";
+                document.getElementById('btn-check-dob').style.display = "none";
+                document.getElementById('name-section').style.display = "block";
+            } else {
+                errorMsg.innerText = "Error: DOB not found. Try again!";
+            }
+        }
+
+        function verifyLogin() {
+            let nameIn = document.getElementById('name-input').value.trim().toLowerCase();
+            const errorMsg = document.getElementById('error-msg');
+            
+            if (nameIn === currentValidName) {
+                verifiedFriendName = nameIn.charAt(0).toUpperCase() + nameIn.slice(1);
+                switchScreen('screen-qna');
+            } else {
+                errorMsg.innerText = "Error: Name doesn't match this DOB!";
+            }
+        }
+
+        // --- 3. QnA LOGIC & DODGING BUTTON ---
+        const questions = [
+            "Are u in?",
+            "Will u accept my gift?",
+            "Are u happy?",
+            "We are almost there?"
+        ];
+        let qIndex = 0;
+
+        function nextQuestion() {
+            qIndex++;
+            if (qIndex < questions.length) {
+                document.getElementById('question-text').innerText = questions[qIndex];
+                // Reset No button position just in case
+                const btnNo = document.getElementById('btn-no');
+                btnNo.style.position = "relative";
+                btnNo.style.left = "0";
+                btnNo.style.top = "0";
+            } else {
+                showNotes();
+            }
+        }
+
+        function dodgeNo() {
+            const btnNo = document.getElementById('btn-no');
+            const container = document.querySelector('#screen-qna');
+            
+            // Randomize position within the boundaries
+            const maxX = container.offsetWidth - btnNo.offsetWidth - 20;
+            const maxY = 150; // Bound Y movement
+            
+            const randomX = Math.floor(Math.random() * maxX) - (maxX / 2);
+            const randomY = Math.floor(Math.random() * maxY) - 50;
+
+            btnNo.style.position = 'absolute';
+            btnNo.style.transform = `translate(${randomX}px, ${randomY}px)`;
+        }
+
+        // --- 4. NOTES SECTION ---
+        const notes = [
+            "1. Wishing you a day filled with happiness and a year filled with joy.",
+            "2. You are one of the most amazing people I know.",
+            "3. May all your beautiful dreams come true this year.",
+            "4. Thank you for being such an incredible friend.",
+            "5. Never stop smiling, because your smile lights up the room!",
+            "6. I hope today brings you as much joy as you bring to everyone else."
+        ];
+
+        function showNotes() {
+            switchScreen('screen-notes');
+            document.querySelector('#screen-notes h2').innerText = `Happy Birthday, ${verifiedFriendName}! 🎂`;
+            
+            const list = document.getElementById('notes-list');
+            list.innerHTML = "";
+            
+            // Stagger animation for notes
+            notes.forEach((note, index) => {
+                let div = document.createElement('div');
+                div.className = 'note-card';
+                div.innerText = note;
+                div.style.animationDelay = `${index * 0.4}s`;
+                list.appendChild(div);
+            });
+
+            // Trigger final modal after reading time (7 seconds)
+            setTimeout(() => {
+                document.getElementById('final-modal').style.display = 'flex';
+            }, 7000);
+        }
+
+        // --- 5. UTILS ---
+        function switchScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('final-modal').style.display = 'none';
+        }
     </script>
 </body>
 </html>
